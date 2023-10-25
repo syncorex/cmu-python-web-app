@@ -5,4 +5,4 @@ A repository for Advanced Programming final project.
 
 ## Requirements
 
-## How to user
+## How to use
