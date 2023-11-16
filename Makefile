@@ -22,7 +22,7 @@ run-test:
 
 .PHONY: clean
 clean:
-	rm -rf __pycache__
+	rm -rf src/__pycache__
 	rm -rf .pytest_cache
 	rm -rf .mypy_cache
 	rm -rf .hypothesis
