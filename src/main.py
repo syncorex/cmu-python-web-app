@@ -9,9 +9,10 @@ app = Flask(__name__)
 
 cert_path = '/home/user/advpy-web-app/X509-cert-8255257794010601158.pem'
 
-uri = """mongodb+srv://cluster0.j9gqkfd.mongodb.net/?
-         authSource=%24external&authMechanism=MONGODB-X509
-         &retryWrites=true&w=majority"""
+uri = 'mongodb+srv://cluster0.j9gqkfd.mongodb.net/'\
+      '?authSource=%24external'\
+      '&authMechanism=MONGODB-X509&'\
+      'retryWrites=true&w=majority'
 
 client: MongoClient[typing.Any]
 client = MongoClient(uri,
