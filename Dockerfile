@@ -39,6 +39,8 @@ RUN git clone https://github.com/Kattis/kattis-cli.git
 ENV PATH="${HOME}:${HOME}/.local/bin:${HOME}/kattis-cli:${PATH}"
 ENV KATTIS_CLI="${HOME}/kattis-cli"
 
+EXPOSE 5000
+
 USER user
 
 CMD zsh

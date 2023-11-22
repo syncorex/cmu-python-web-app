@@ -27,6 +27,9 @@ doc_count = collection.count_documents({})
 print(doc_count)
 
 
-@app.route("/")
-def hello_world() -> str:
-    return "<p>Hello, World!</p>"
+@app.route('/')
+def index() -> str:
+    return '<h1>Web App with Python Flask!</h1>'
+
+
+app.run(host='0.0.0.0', port=5000)
