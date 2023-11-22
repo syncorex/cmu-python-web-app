@@ -9,5 +9,7 @@ A repository for Advanced Programming final project.
 
 Start by running the docker container by running `run.sh` and then run `src/main.py` with Python to start the Flask app:
 
-`./run.sh
-python src/main.py`
+```
+./run.sh
+python src/main.py
+```
