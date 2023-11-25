@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trivia Result</title>
+</head>
+<body>
+    <h2>Question {{ question_number }}</h2>
+    <p>Correct Answer: {{ correct_answer }}</p>
+    <p>Your Answer: {{ user_answer }}</p>
+    <p>{{ result_message }}</p>
+    <p><a href="/question/{{ next_question_number }}">Next Question</a></p>
+</body>
+</html>

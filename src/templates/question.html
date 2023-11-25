@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trivia Question</title>
+</head>
+<body>
+    <h2>Question {{ question_number }}</h2>
+    <p>{{ question_text }}</p>
+    <form method="POST" action="/question/{{ question_number }}">
+        {% for option in options %}
+            <input type="radio" name="answer" value="{{ option }}">{{ option }}<br>
+        {% endfor %}
+        <input type="hidden" name="question_number" value="{{ question_number }}">
+        <input type="submit" value="Submit Answer">
+    </form>
+</body>
+</html>
