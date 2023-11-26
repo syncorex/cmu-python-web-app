@@ -7,7 +7,9 @@ A repository for Advanced Programming final project.
 
 ## How to use
 
-Start by running the docker container by running `run.sh` and then run `src/main.py` with Python to start the Flask app:
+Make sure you have the Atlas certificate in the top level directory of the app.
+
+Run the container and execute with Python to start the Flask app:
 
 ```
 ./run.sh
