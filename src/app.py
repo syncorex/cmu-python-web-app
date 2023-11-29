@@ -8,20 +8,6 @@ import requests
 import random
 import html
 
-questions = [
-    {
-        'question_text': 'What is the capital of France?',
-        'options': ['London', 'Berlin', 'Madrid', 'Paris'],
-        'correct_answer': 'Paris'
-    },
-    {
-        'question_text': 'Which planet is known as the Red Planet?',
-        'options': ['Mars', 'Jupiter', 'Venus', 'Earth'],
-        'correct_answer': 'Mars'
-    },
-    # Add more questions here...
-]
-
 app = Flask(__name__)
 app.secret_key = 'BLABLABLA'
 
@@ -58,24 +44,27 @@ def start() -> Any:
     qs = list()
     for q in res['results']:
         q['options'] = q['incorrect_answers']
-        q['options'].insert(random.randint(0, len(q['incorrect_answers'])), q['correct_answer'])
+        q['options'].insert(random.randint(0, len(q['incorrect_answers'])),
+                            q['correct_answer'])
         q['question'] = html.unescape(q['question'])
         qs.append(q)
     session['questions'] = qs
     # print(session['score'])
     return redirect(url_for('question', question_number=0))
 
+
 @app.route('/end')
 def end() -> Any:
     return render_template('end.html', score=session['score'])
 
+
 @app.route('/question/<int:question_number>', methods=['GET', 'POST'])
 def question(question_number: int) -> Any:
 
-
     if request.method == 'POST':
+        questions = session['questions']
         user_answer = request.form['answer']
-        correct_answer = session['questions'][question_number]['correct_answer']
+        correct_answer = questions[question_number]['correct_answer']
         if user_answer == correct_answer:
             session['score'] += 1
             result_message = "Correct!"
@@ -90,8 +79,8 @@ def question(question_number: int) -> Any:
                                result_message=result_message,
                                next_question_number=question_number + 1)
 
-    if question_number < len(session['questions']):
-        question_data = session['questions'][question_number]
+    if question_number < len(questions):
+        question_data = questions[question_number]
         return render_template('question.html',
                                score=session['score'],
                                question_number=question_number,
