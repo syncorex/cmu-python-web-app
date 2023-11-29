@@ -4,7 +4,8 @@
     <title>Trivia Question</title>
 </head>
 <body>
-    <h2>Question {{ question_number }}</h2>
+    <h2>Question {{ question_number + 1 }}</h2>
+    <h4>Score: {{ score }}</h4>
     <p>{{ question_text }}</p>
     <form method="POST" action="/question/{{ question_number }}">
         {% for option in options %}
