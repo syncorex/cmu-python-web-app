@@ -43,6 +43,9 @@ def start() -> Any:
     # print(res)
     qs = list()
     for q in res['results']:
+        q['correct_answer'] = html.unescape(q['correct_answer'])
+        for r in q['incorrect_answers']:
+            r = html.unescape(r)
         q['options'] = q['incorrect_answers']
         q['options'].insert(random.randint(0, len(q['incorrect_answers'])),
                             q['correct_answer'])
@@ -60,9 +63,10 @@ def end() -> Any:
 
 @app.route('/question/<int:question_number>', methods=['GET', 'POST'])
 def question(question_number: int) -> Any:
+    questions = session['questions']
 
     if request.method == 'POST':
-        questions = session['questions']
+
         user_answer = request.form['answer']
         correct_answer = questions[question_number]['correct_answer']
         if user_answer == correct_answer:
@@ -88,7 +92,7 @@ def question(question_number: int) -> Any:
                                options=question_data['options'])
 
     # If there are no more questions, redirect to the result page
-    return redirect(url_for('index'))
+    return redirect(url_for('end'))
 
 
 if __name__ == "__main__":

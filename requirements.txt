@@ -7,4 +7,5 @@ flake8
 autopep8
 lxml
 requests
+types-requests
 Flask
