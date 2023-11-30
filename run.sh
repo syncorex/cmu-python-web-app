@@ -144,6 +144,7 @@ if [ ! -f $ZSH_HISTORY ]; then
 fi
 
 winenv $container run -it --rm \
+    -p 5000:5000 \
     -v "$HOST_DIR:$GUEST_DIR$(optZ)" \
     -v "$SSH_DIR:$USER_HOME/.ssh" \
     -v "$GIT_CONFIG:$USER_HOME/.gitconfig" \
