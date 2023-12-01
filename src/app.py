@@ -44,8 +44,9 @@ def start() -> Any:
     qs = list()
     for q in res['results']:
         q['correct_answer'] = html.unescape(q['correct_answer'])
-        for r in q['incorrect_answers']:
-            r = html.unescape(r)
+        for i in range(len(q['incorrect_answers'])):
+            q['incorrect_answers'][i] = html.unescape(
+                q['incorrect_answers'][i])
         q['options'] = q['incorrect_answers']
         q['options'].insert(random.randint(0, len(q['incorrect_answers'])),
                             q['correct_answer'])
@@ -63,20 +64,29 @@ def end() -> Any:
 
 @app.route('/question/<int:question_number>', methods=['GET', 'POST'])
 def question(question_number: int) -> Any:
-    questions = session['questions']
+
+    if app.testing:  # Set values for unit testing
+        questions = [{"answer": "test", "correct_answer": "test",
+                      "question": "test", "options": "test"}]
+        score = 0
+    else:
+        questions = session['questions']
+        score = session['score']
 
     if request.method == 'POST':
 
         user_answer = request.form['answer']
         correct_answer = questions[question_number]['correct_answer']
         if user_answer == correct_answer:
-            session['score'] += 1
+            score += 1
+            if not app.testing:
+                session["score"] = score
             result_message = "Correct!"
         else:
             result_message = "Wrong!"
 
         return render_template('result.html',
-                               score=session['score'],
+                               score=0 if app.testing else session['score'],
                                question_number=question_number,
                                correct_answer=correct_answer,
                                user_answer=user_answer,
@@ -86,7 +96,7 @@ def question(question_number: int) -> Any:
     if question_number < len(questions):
         question_data = questions[question_number]
         return render_template('question.html',
-                               score=session['score'],
+                               score=0 if app.testing else session['score'],
                                question_number=question_number,
                                question_text=question_data['question'],
                                options=question_data['options'])

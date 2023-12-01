@@ -2,13 +2,47 @@
 
 import unittest
 
-# from app import index
+from app import app
 
 
-class TestHelloWorld(unittest.TestCase):
+class TestTriviaApp(unittest.TestCase):
 
-    def test1(self) -> None:
-        self.assertNotEqual("Testing needs work!", " ")
+    def setUp(self) -> None:
+        app.testing = True
+
+    def test_home_ok(self) -> None:
+        client = app.test_client()
+        res = client.get("/")
+        self.assertEqual(res.status_code, 200)
+
+    def test_home_res(self) -> None:
+        client = app.test_client()
+        res = client.get("/")
+        self.assertIn("Trivia", str(res.data),
+                      "HTML Response invalid (no 'Trivia'")
+
+    def test_question_get(self) -> None:
+        client = app.test_client()
+        res = client.get("/question/0")
+        self.assertEqual(res.status_code, 200)
+
+    def test_question_correct(self) -> None:
+        client = app.test_client()
+        res = client.post("/question/0", data={
+            "answer": "test"
+        })
+        self.assertIn("<p>Correct!</p>", str(res.data),
+                      "Question processing failed or \
+                      'Correct' element missing from HTML response")
+
+    def test_question_wrong(self) -> None:
+        client = app.test_client()
+        res = client.post("/question/0", data={
+            "answer": "incorrect"
+        })
+        self.assertIn("<p>Wrong!</p>", str(res.data),
+                      "Question processing failed or \
+                      'Wrong' element missing from HTML response")
 
 
 if __name__ == "__main__":
