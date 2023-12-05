@@ -1,19 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Trivia Question</title>
-</head>
-<body>
-    <h2>Question {{ question_number + 1 }}</h2>
-    <h4>Score: {{ score }}</h4>
-    <h4>Difficulty: {{ difficulty.capitalize() }} (worth {{ value }} points)</h4>
-    <p>{{ question_text }}</p>
-    <form method="POST" action="/question/{{ question_number }}">
-        {% for option in options %}
-            <input type="radio" name="answer" value="{{ option }}">{{ option }}<br>
-        {% endfor %}
-        <input type="hidden" name="question_number" value="{{ question_number }}">
-        <input type="submit" value="Submit Answer">
-    </form>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}- Question {{ question_number + 1 }}{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2 class="Heading">Question {{ question_number + 1 }}</h2>
+        <div><strong>Score: {{ score }}</strong></div>
+        <span><strong>Difficulty: {{ difficulty.capitalize() }} (worth {{ value }} points)</strong></span>
+        <p class="lead mt-2">{{ question_text }}</p>
+        <form method="POST" action="/question/{{ question_number }}">
+            <div class="form-check">
+                {% for option in options %}
+                    <input class="form-check-input" type="radio" name="answer" value="{{ option }}">
+                    <label class="form-check-label" for="flexRadioDisabled">{{ option }}</label><br>
+                {% endfor %}
+                <input type="hidden" name="question_number" value="{{ question_number }}">
+                <input class="trivia-submit btn btn-success btm-sm" type="submit" value="Submit Answer">
+            </div>
+        </form>
+    </div>
+{% endblock %}

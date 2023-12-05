@@ -74,7 +74,7 @@ def start() -> Any:
 
     api_url = 'https://opentdb.com/api.php?amount=10'
     if (session['difficulty'] in ['easy', 'medium', 'hard']):
-        api_url += f'&difficulty={session['difficulty']}'
+        api_url += f"&difficulty={session['difficulty']}"
     # print(api_url)
     res = requests.get(api_url).json()
     # print(res)
@@ -144,7 +144,12 @@ def question(question_number: int) -> Any:
     question_value = trivia.getDifficultyValue(question_data['difficulty'])
 
     if request.method == 'POST':
+        if not 'answer' in request.form:
+            return redirect(url_for('question', question_number=question_number))
+
+        
         user_answer = request.form['answer']
+
         correct_answer = question_data['correct_answer']
         if user_answer == correct_answer:
             score += question_value

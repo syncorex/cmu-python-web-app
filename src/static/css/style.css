@@ -1,0 +1,12 @@
+.content {
+    margin: 100px auto auto auto;
+    max-width: 1000px;
+}
+
+.nav li {
+    list-style: none;
+}
+
+.trivia-submit {
+    margin-top:15px
+}

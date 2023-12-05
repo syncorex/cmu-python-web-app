@@ -1,19 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Trivia - End of game</title>
-</head>
-<body>
-    <h2>Congratulations, you finished with a score of {{ score }}!</h2>
-    {% if difficulty != None %}
-        <h4>Difficulty Setting: {{ difficulty.capitalize() }}</h4>
-    {% endif %}
-    <form method="POST" action="/end" label="Join the leaderboard">
+{% extends 'base.html' %}
+
+{% block title %}- End of Game{% endblock %}
+
+
+{% block content %}
+    <div class="container text-center">
+        <h1>Game finished</h1>
+        <h2>Congratulations, you finished with a score of {{ score }}!</h2>
+        {% if difficulty != None %}
+            <h4 class="m-3">Difficulty Setting: {{ difficulty.capitalize() }}</h4>
+        {% endif %}
+        <form method="POST" action="/end">
+            <div class="m-2">Join the leaderboard!</div>
             <input type="text" name="user_name" value="">
-        <input type="hidden" name="score" value="{{ score }}">
-        <input type="submit" value="Submit">
-    </form>
-    <script src="https://cdn.jsdelivr.net/npm/tsparticles-confetti@2.12.0/tsparticles.confetti.bundle.min.js"></script>
-    <script src="{{ url_for('static', filename='js/hooray.js') }}"></script>
-</body>
-</html>
+            <input type="hidden" name="score" value="{{ score }}">
+            <input class="btn btn-primary" type="submit" value="Submit">
+        </form>
+        <script src="https://cdn.jsdelivr.net/npm/tsparticles-confetti@2.12.0/tsparticles.confetti.bundle.min.js"></script>
+        <script src="{{ url_for('static', filename='js/hooray.js') }}"></script>
+    </div>
+{% endblock %}

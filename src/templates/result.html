@@ -1,20 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Trivia Result</title>
-</head>
-<body>
-    <h2>Question {{ question_number+1 }}</h2>
-    <p>Correct Answer: {{ correct_answer }}</p>
-    <p>Your Answer: {{ user_answer }}</p>
-    <p>{{ result_message }}</p>
-    <h4>Score: {{ score }}</h4>
-    <p><a href="/question/{{ next_question_number }}">
-        {% if next_question_number >= num_questions %}
-            See Results
-        {% else %}
-            Next Question
-        {% endif %}
-    </a></p>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}- Hall of Champions{% endblock %}
+
+
+{% block content %}
+    <div class="container">
+        <h2>Question {{ question_number+1 }}</h2>
+        <p>Correct Answer: {{ correct_answer }}</p>
+        <p>Your Answer: {{ user_answer }}</p>
+        <p>{{ result_message }}</p>
+        <h4>Score: {{ score }}</h4>
+        <p><a class="btn btn-primary" href="/question/{{ next_question_number }}">
+            {% if next_question_number >= num_questions %}
+                See Results
+            {% else %}
+                Next Question
+            {% endif %}
+        </a></p>
+    </div>
+{% endblock %}

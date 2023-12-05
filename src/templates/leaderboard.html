@@ -1,18 +1,16 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>The Hall of Champions</title>
-</head>
-<body>
-    <!-- Display leaderboard -->
-    <h3>Top Scores:</h3>
-    <ol>
-        {% for entry in top_scores %}
-            <li>{{ entry.user_id }} - {{ entry.score }}</li>
-        {% endfor %}
-    </ol>
+{% extends 'base.html' %}
+
+{% block title %}- Hall of Champions{% endblock %}
 
 
-    <a href="/">Back to home</a>
-</body>
-</html>
+{% block content %}
+    <div class="container text-center">
+        <h3>Top Scores:</h3>
+        <ol>
+            {% for entry in top_scores %}
+                <li>{{ entry.user_id }} - {{ entry.score }}</li>
+            {% endfor %}
+        </ol>
+        <a href="/">Back to home</a>
+    </div>
+{% endblock %}
