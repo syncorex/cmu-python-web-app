@@ -4,13 +4,15 @@
 
 
 {% block content %}
-    <div class="container text-center">
-        <h3>Top Scores:</h3>
-        <ol>
+    <div class="container">
+        <h3 class="text-center">Top Scores:</h3>
+        <ol class="w-25 leaderboard">
             {% for entry in top_scores %}
                 <li>{{ entry.user_id }} - {{ entry.score }}</li>
             {% endfor %}
         </ol>
-        <a href="/">Back to home</a>
+        <div class="container text-center">
+            <a class="btn btn-primary m-4" href="/">Back to home</a>
+        </div> 
     </div>
 {% endblock %}
