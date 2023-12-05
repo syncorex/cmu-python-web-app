@@ -132,11 +132,9 @@ def question(question_number: int) -> Any:
                       "options": "test",
                       "difficulty": "easy"}]
         score = 0
-        user_name = 'testuser'
     else:
         questions = session['questions']
         score = session['score']
-        user_name = session['user_name']
 
     # If there are no more questions, redirect to the result page
     if question_number >= len(questions):
