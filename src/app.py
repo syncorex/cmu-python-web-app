@@ -32,6 +32,7 @@ leaderboard_collection: Collection[Any]
 leaderboard_collection = db['leaderboard']
 doc_count = collection.count_documents({})
 
+
 class Trivia:
     difficulty = {'easy': {'score': 30},
                   'medium': {'score': 40},
@@ -44,32 +45,38 @@ class Trivia:
         else:
             return 1
 
+
 trivia = Trivia()
 
-def submit_score(user_id, score):
+
+def submit_score(user_id: str, score: int) -> None:
     """Submit user score to the leaderboard."""
-    leaderboard_collection.insert_one({'user_id': user_id, 'score': score, 'timestamp': datetime.utcnow()})
+    leaderboard_collection.insert_one(
+        {'user_id': user_id, 'score': score, 'timestamp': datetime.utcnow()})
 
 
-def get_top_scores(limit=10):
+def get_top_scores(limit: int = 10) -> list[Any]:
     """Get top scores from the leaderboard."""
     top_scores = leaderboard_collection.find().sort('score', -1).limit(limit)
     return list(top_scores)
 
 
-def get_user_rank(user_id):
+def get_user_rank(user_id: str) -> int:
     """Get the position of a user in the leaderboard."""
     user_score = leaderboard_collection.find_one({'user_id': user_id})
     if user_score:
         # If the user is found in the leaderboard, retrieve their score
         user_score = user_score['score']
         # Count the number of users with higher scores
-        rank = leaderboard_collection.count_documents({'score': {'$gt': user_score}})
+        rank = leaderboard_collection.count_documents(
+            {'score': {'$gt': user_score}})
         # Add 1 to rank since MongoDB uses 0-based indexing
         return rank + 1
     else:
-        # If the user is not found in the leaderboard, return a rank of 0 (or any appropriate value)
+        # If the user is not found in the leaderboard, return a rank of 0 (or
+        # any appropriate value)
         return 0
+
 
 @app.route('/')
 def index() -> str:
@@ -114,13 +121,12 @@ def end() -> Any:
         submit_score(session['user_name'], session['score'])
         return redirect(url_for('leaderboard'))
 
-
     difficulty = 'test' if app.testing else session['difficulty']
 
     return render_template('end.html',
                            score=session['score'],
                            difficulty=difficulty)
-    
+
 
 @app.route('/leaderboard')
 def leaderboard() -> Any:
@@ -128,7 +134,11 @@ def leaderboard() -> Any:
     top_scores = get_top_scores()
     print(session['user_name'])
     user_position = get_user_rank(session['user_name'])
-    return render_template('leaderboard.html', score=session['score'], top_scores=top_scores, user_position=user_position)
+    return render_template(
+        'leaderboard.html',
+        score=session['score'],
+        top_scores=top_scores,
+        user_position=user_position)
 
 
 @app.route('/question/<int:question_number>', methods=['GET', 'POST'])
@@ -141,9 +151,11 @@ def question(question_number: int) -> Any:
                       "options": "test",
                       "difficulty": "easy"}]
         score = 0
+        user_name = 'testuser'
     else:
         questions = session['questions']
         score = session['score']
+        user_name = session['user_name']
 
     # If there are no more questions, redirect to the result page
     if question_number >= len(questions):
@@ -174,14 +186,15 @@ def question(question_number: int) -> Any:
                                num_questions=len(questions))
 
     if question_number < len(questions):
-        return render_template('question.html',
-                               score=0 if app.testing else session['score'],
-                               question_number=question_number,
-                               question_text=question_data['question'],
-                               options=question_data['options'],
-                               difficulty=question_data['difficulty'],
-                               value=question_value,
-                               user_position=get_user_rank(session['user_name']))
+        return render_template(
+            'question.html',
+            score=0 if app.testing else session['score'],
+            question_number=question_number,
+            question_text=question_data['question'],
+            options=question_data['options'],
+            difficulty=question_data['difficulty'],
+            value=question_value,
+            user_position=get_user_rank(user_name))
 
     return redirect(url_for('end'))
 
