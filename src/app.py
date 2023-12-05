@@ -7,15 +7,16 @@ from pymongo.server_api import ServerApi
 import requests
 import random
 import html
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = 'BLABLABLA'
 
 cert_path = '/home/user/advpy-web-app/X509-cert-8255257794010601158.pem'
 
-uri = 'mongodb+srv://cluster0.j9gqkfd.mongodb.net/'\
-      '?authSource=%24external'\
-      '&authMechanism=MONGODB-X509&'\
+uri = 'mongodb+srv://cluster0.j9gqkfd.mongodb.net/' \
+      '?authSource=%24external' \
+      '&authMechanism=MONGODB-X509&' \
       'retryWrites=true&w=majority'
 
 client: MongoClient[Any]
@@ -27,9 +28,9 @@ db: Database[Any]
 db = client['trivia']
 collection: Collection[Any]
 collection = db['questions']
+leaderboard_collection: Collection[Any]
+leaderboard_collection = db['leaderboard']
 doc_count = collection.count_documents({})
-# print(doc_count)
-
 
 class Trivia:
     difficulty = {'easy': {'score': 30},
@@ -43,16 +44,40 @@ class Trivia:
         else:
             return 1
 
-
 trivia = Trivia()
 
+def submit_score(user_id, score):
+    """Submit user score to the leaderboard."""
+    leaderboard_collection.insert_one({'user_id': user_id, 'score': score, 'timestamp': datetime.utcnow()})
+
+
+def get_top_scores(limit=10):
+    """Get top scores from the leaderboard."""
+    top_scores = leaderboard_collection.find().sort('score', -1).limit(limit)
+    return list(top_scores)
+
+
+def get_user_rank(user_id):
+    """Get the position of a user in the leaderboard."""
+    user_score = leaderboard_collection.find_one({'user_id': user_id})
+    if user_score:
+        # If the user is found in the leaderboard, retrieve their score
+        user_score = user_score['score']
+        # Count the number of users with higher scores
+        rank = leaderboard_collection.count_documents({'score': {'$gt': user_score}})
+        # Add 1 to rank since MongoDB uses 0-based indexing
+        return rank + 1
+    else:
+        # If the user is not found in the leaderboard, return a rank of 0 (or any appropriate value)
+        return 0
 
 @app.route('/')
 def index() -> str:
+    """Render the index page."""
     return render_template('index.html')
 
 
-@app.route('/start')
+@app.route('/start', methods=['GET', 'POST'])
 def start() -> Any:
     session['score'] = 0
     session['difficulty'] = request.args.get('difficulty')
@@ -80,14 +105,30 @@ def start() -> Any:
     return redirect(url_for('question', question_number=0))
 
 
-@app.route('/end')
+@app.route('/end', methods=['GET', 'POST'])
 def end() -> Any:
+    if request.method == 'POST':
+        session['user_name'] = request.form['user_name']
+        print(session['user_name'])
+        """Submit score to db and display the leaderboard."""
+        submit_score(session['user_name'], session['score'])
+        return redirect(url_for('leaderboard'))
+
 
     difficulty = 'test' if app.testing else session['difficulty']
 
     return render_template('end.html',
                            score=session['score'],
                            difficulty=difficulty)
+    
+
+@app.route('/leaderboard')
+def leaderboard() -> Any:
+    """Display the leaderboard page."""
+    top_scores = get_top_scores()
+    print(session['user_name'])
+    user_position = get_user_rank(session['user_name'])
+    return render_template('leaderboard.html', score=session['score'], top_scores=top_scores, user_position=user_position)
 
 
 @app.route('/question/<int:question_number>', methods=['GET', 'POST'])
@@ -112,7 +153,6 @@ def question(question_number: int) -> Any:
     question_value = trivia.getDifficultyValue(question_data['difficulty'])
 
     if request.method == 'POST':
-
         user_answer = request.form['answer']
         correct_answer = question_data['correct_answer']
         if user_answer == correct_answer:
@@ -134,16 +174,17 @@ def question(question_number: int) -> Any:
                                num_questions=len(questions))
 
     if question_number < len(questions):
-
         return render_template('question.html',
                                score=0 if app.testing else session['score'],
                                question_number=question_number,
                                question_text=question_data['question'],
                                options=question_data['options'],
                                difficulty=question_data['difficulty'],
-                               value=question_value)
+                               value=question_value,
+                               user_position=get_user_rank(session['user_name']))
+
+    return redirect(url_for('end'))
 
 
 if __name__ == "__main__":
-    # Start the Flask app
     app.run(debug=True, host='0.0.0.0', port=5000)

@@ -9,7 +9,7 @@
         <h4>Difficulty Setting: {{ difficulty.capitalize() }}</h4>
     {% endif %}
     <form method="POST" action="/end" label="Join the leaderboard">
-            <input type="text" name="name" value="">
+            <input type="text" name="user_name" value="">
         <input type="hidden" name="score" value="{{ score }}">
         <input type="submit" value="Submit">
     </form>

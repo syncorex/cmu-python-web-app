@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>The Hall of Champions</title>
+</head>
+<body>
+    <!-- Display leaderboard -->
+    <h3>Top Scores:</h3>
+    <ol>
+        {% for entry in top_scores %}
+            <li>{{ entry.user_id }} - {{ entry.score }}</li>
+        {% endfor %}
+    </ol>
+
+    <p>Your Position: {{ user_position }}</p>
+
+    <!-- Form to join the leaderboard -->
+    <!--<form method="POST" action="/end" label="Join the leaderboard">
+        <label for="name">Your Name:</label>
+        <input type="text" name="name" value="">
+        <input type="hidden" name="score" value="{{ score }}">
+        <input type="submit" value="Submit">
+    </form> -->
+
+    <a href="/">Back to home</a>
+</body>
+</html>
