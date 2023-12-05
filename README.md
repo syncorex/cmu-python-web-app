@@ -8,7 +8,7 @@ Run the container and execute with Python to start the Flask app:
 
 ```
 ./run.sh
-python src/main.py
+python src/app.py
 ```
 
 ## Self-grade
