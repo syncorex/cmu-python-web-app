@@ -61,23 +61,6 @@ def get_top_scores(limit: int = 10) -> list[Any]:
     return list(top_scores)
 
 
-def get_user_rank(user_id: str) -> int:
-    """Get the position of a user in the leaderboard."""
-    user_score = leaderboard_collection.find_one({'user_id': user_id})
-    if user_score:
-        # If the user is found in the leaderboard, retrieve their score
-        user_score = user_score['score']
-        # Count the number of users with higher scores
-        rank = leaderboard_collection.count_documents(
-            {'score': {'$gt': user_score}})
-        # Add 1 to rank since MongoDB uses 0-based indexing
-        return rank + 1
-    else:
-        # If the user is not found in the leaderboard, return a rank of 0 (or
-        # any appropriate value)
-        return 0
-
-
 @app.route('/')
 def index() -> str:
     """Render the index page."""
@@ -133,12 +116,10 @@ def leaderboard() -> Any:
     """Display the leaderboard page."""
     top_scores = get_top_scores()
     print(session['user_name'])
-    user_position = get_user_rank(session['user_name'])
     return render_template(
         'leaderboard.html',
         score=session['score'],
-        top_scores=top_scores,
-        user_position=user_position)
+        top_scores=top_scores,)
 
 
 @app.route('/question/<int:question_number>', methods=['GET', 'POST'])
@@ -193,8 +174,7 @@ def question(question_number: int) -> Any:
             question_text=question_data['question'],
             options=question_data['options'],
             difficulty=question_data['difficulty'],
-            value=question_value,
-            user_position=get_user_rank(user_name))
+            value=question_value)
 
     return redirect(url_for('end'))
 
