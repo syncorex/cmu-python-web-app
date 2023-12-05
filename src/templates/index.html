@@ -5,6 +5,14 @@
 </head>
 <body>
     <h1>Welcome to the Trivia App!</h1>
-    <p><a href="/start">Start Game</a></p>
+    <form action="/start" method="get">
+        <select name="difficulty">
+            <option value="any">Any</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+        </select>
+        <input type="submit" value="Start Game">
+    </form>
 </body>
 </html>

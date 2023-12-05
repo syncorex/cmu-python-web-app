@@ -6,6 +6,7 @@
 <body>
     <h2>Question {{ question_number + 1 }}</h2>
     <h4>Score: {{ score }}</h4>
+    <h4>Difficulty: {{ difficulty.capitalize() }} (worth {{ value }} points)</h4>
     <p>{{ question_text }}</p>
     <form method="POST" action="/question/{{ question_number }}">
         {% for option in options %}

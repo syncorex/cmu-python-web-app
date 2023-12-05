@@ -31,7 +31,7 @@ class TestTriviaApp(unittest.TestCase):
         res = client.post("/question/0", data={
             "answer": "test"
         })
-        self.assertIn("<p>Correct!</p>", str(res.data),
+        self.assertIn("<p>Correct!", str(res.data),
                       "Question processing failed or \
                       'Correct' element missing from HTML response")
 
@@ -40,7 +40,7 @@ class TestTriviaApp(unittest.TestCase):
         res = client.post("/question/0", data={
             "answer": "incorrect"
         })
-        self.assertIn("<p>Wrong!</p>", str(res.data),
+        self.assertIn("<p>Wrong!", str(res.data),
                       "Question processing failed or \
                       'Wrong' element missing from HTML response")
 

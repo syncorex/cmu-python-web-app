@@ -5,10 +5,15 @@
 </head>
 <body>
     <h2>Congratulations, you finished with a score of {{ score }}!</h2>
+    {% if difficulty != None %}
+        <h4>Difficulty Setting: {{ difficulty.capitalize() }}</h4>
+    {% endif %}
     <form method="POST" action="/end" label="Join the leaderboard">
             <input type="text" name="name" value="">
         <input type="hidden" name="score" value="{{ score }}">
         <input type="submit" value="Submit">
     </form>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles-confetti@2.12.0/tsparticles.confetti.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/hooray.js') }}"></script>
 </body>
 </html>

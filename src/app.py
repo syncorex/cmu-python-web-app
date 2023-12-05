@@ -31,6 +31,22 @@ doc_count = collection.count_documents({})
 # print(doc_count)
 
 
+class Trivia:
+    difficulty = {'easy': {'score': 30},
+                  'medium': {'score': 40},
+                  'hard': {'score': 50}}
+
+    def getDifficultyValue(self, diff: str) -> int:
+        val = self.difficulty[diff]['score']
+        if val:
+            return val
+        else:
+            return 1
+
+
+trivia = Trivia()
+
+
 @app.route('/')
 def index() -> str:
     return render_template('index.html')
@@ -39,7 +55,13 @@ def index() -> str:
 @app.route('/start')
 def start() -> Any:
     session['score'] = 0
-    res = requests.get('https://opentdb.com/api.php?amount=10').json()
+    session['difficulty'] = request.args.get('difficulty')
+
+    api_url = 'https://opentdb.com/api.php?amount=10'
+    if (session['difficulty'] in ['easy', 'medium', 'hard']):
+        api_url += f'&difficulty={session['difficulty']}'
+    # print(api_url)
+    res = requests.get(api_url).json()
     # print(res)
     qs = list()
     for q in res['results']:
@@ -53,35 +75,51 @@ def start() -> Any:
         q['question'] = html.unescape(q['question'])
         qs.append(q)
     session['questions'] = qs
+    print(qs[0])
     # print(session['score'])
     return redirect(url_for('question', question_number=0))
 
 
 @app.route('/end')
 def end() -> Any:
-    return render_template('end.html', score=session['score'])
+
+    difficulty = 'test' if app.testing else session['difficulty']
+
+    return render_template('end.html',
+                           score=session['score'],
+                           difficulty=difficulty)
 
 
 @app.route('/question/<int:question_number>', methods=['GET', 'POST'])
 def question(question_number: int) -> Any:
 
     if app.testing:  # Set values for unit testing
-        questions = [{"answer": "test", "correct_answer": "test",
-                      "question": "test", "options": "test"}]
+        questions = [{"answer": "test",
+                      "correct_answer": "test",
+                      "question": "test",
+                      "options": "test",
+                      "difficulty": "easy"}]
         score = 0
     else:
         questions = session['questions']
         score = session['score']
 
+    # If there are no more questions, redirect to the result page
+    if question_number >= len(questions):
+        return redirect(url_for('end'))
+
+    question_data = questions[question_number]
+    question_value = trivia.getDifficultyValue(question_data['difficulty'])
+
     if request.method == 'POST':
 
         user_answer = request.form['answer']
-        correct_answer = questions[question_number]['correct_answer']
+        correct_answer = question_data['correct_answer']
         if user_answer == correct_answer:
-            score += 1
+            score += question_value
             if not app.testing:
                 session["score"] = score
-            result_message = "Correct!"
+            result_message = f"Correct! +{question_value} points"
         else:
             result_message = "Wrong!"
 
@@ -91,18 +129,19 @@ def question(question_number: int) -> Any:
                                correct_answer=correct_answer,
                                user_answer=user_answer,
                                result_message=result_message,
-                               next_question_number=question_number + 1)
+                               next_question_number=question_number + 1,
+                               value=question_value,
+                               num_questions=len(questions))
 
     if question_number < len(questions):
-        question_data = questions[question_number]
+
         return render_template('question.html',
                                score=0 if app.testing else session['score'],
                                question_number=question_number,
                                question_text=question_data['question'],
-                               options=question_data['options'])
-
-    # If there are no more questions, redirect to the result page
-    return redirect(url_for('end'))
+                               options=question_data['options'],
+                               difficulty=question_data['difficulty'],
+                               value=question_value)
 
 
 if __name__ == "__main__":

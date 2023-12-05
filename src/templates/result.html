@@ -8,6 +8,13 @@
     <p>Correct Answer: {{ correct_answer }}</p>
     <p>Your Answer: {{ user_answer }}</p>
     <p>{{ result_message }}</p>
-    <p><a href="/question/{{ next_question_number }}">Next Question</a></p>
+    <h4>Score: {{ score }}</h4>
+    <p><a href="/question/{{ next_question_number }}">
+        {% if next_question_number >= num_questions %}
+            See Results
+        {% else %}
+            Next Question
+        {% endif %}
+    </a></p>
 </body>
 </html>
