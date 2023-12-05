@@ -144,10 +144,12 @@ def question(question_number: int) -> Any:
     question_value = trivia.getDifficultyValue(question_data['difficulty'])
 
     if request.method == 'POST':
-        if not 'answer' in request.form:
-            return redirect(url_for('question', question_number=question_number))
+        if 'answer' not in request.form:
+            return redirect(
+                url_for(
+                    'question',
+                    question_number=question_number))
 
-        
         user_answer = request.form['answer']
 
         correct_answer = question_data['correct_answer']
