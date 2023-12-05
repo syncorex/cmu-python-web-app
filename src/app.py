@@ -74,7 +74,7 @@ def start() -> Any:
 
     api_url = 'https://opentdb.com/api.php?amount=10'
     if (session['difficulty'] in ['easy', 'medium', 'hard']):
-        api_url += f'&difficulty={session['difficulty']}'
+        api_url += f'&difficulty={session["difficulty"]}'
     # print(api_url)
     res = requests.get(api_url).json()
     # print(res)
