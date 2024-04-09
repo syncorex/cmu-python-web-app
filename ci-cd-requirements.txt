@@ -5,3 +5,4 @@ hypothesis
 Flask
 requests
 types-requests
+pymongo[srv]
