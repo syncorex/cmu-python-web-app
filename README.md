@@ -31,3 +31,10 @@ I would give this assignment full points:
 - Makefile automates all test runs
 - [Screenshots of tests](https://github.com/syncorex/advpy-web-app/tree/main/screenshots)
 - CI/CD checks passed when pushing to main in container
+
+![App screenshot 1](screenshots/0.png)
+![App screenshot 2](screenshots/1.png)
+![App screenshot 3](screenshots/2.png)
+![App screenshot 4](screenshots/3.png)
+![Unit test](screenshots/test_app.png)
+![CI/CD test](screenshots/test-ci-cd.png)
