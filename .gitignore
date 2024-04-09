@@ -1,5 +1,5 @@
 # MondoDB Cloud Server certificate
-X509-cert-*.pem
+*cert*.pem
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

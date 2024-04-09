@@ -12,12 +12,14 @@ from datetime import datetime
 app = Flask(__name__)
 app.secret_key = 'BLABLABLA'
 
-cert_path = '/home/user/advpy-web-app/X509-cert-8255257794010601158.pem'
+cert_path = '/home/user/cmu-python-web-app/cert.pem'
 
-uri = 'mongodb+srv://cluster0.j9gqkfd.mongodb.net/' \
-      '?authSource=%24external' \
-      '&authMechanism=MONGODB-X509&' \
-      'retryWrites=true&w=majority'
+uri = 'mongodb+srv://cluster0.j9gqkfd.mongodb.net/'\
+      '?authSource=%24external'\
+      '&authMechanism=MONGODB-X509'\
+      '&retryWrites=true'\
+      '&w=majority'\
+      '&appName=Cluster0'
 
 client: MongoClient[Any]
 client = MongoClient(uri,
@@ -75,9 +77,9 @@ def start() -> Any:
     api_url = 'https://opentdb.com/api.php?amount=10'
     if (session['difficulty'] in ['easy', 'medium', 'hard']):
         api_url += f"&difficulty={session['difficulty']}"
-    # print(api_url)
+
     res = requests.get(api_url).json()
-    # print(res)
+
     qs = list()
     for q in res['results']:
         q['correct_answer'] = html.unescape(q['correct_answer'])
@@ -90,8 +92,7 @@ def start() -> Any:
         q['question'] = html.unescape(q['question'])
         qs.append(q)
     session['questions'] = qs
-    print(qs[0])
-    # print(session['score'])
+
     return redirect(url_for('question', question_number=0))
 
 
@@ -99,7 +100,7 @@ def start() -> Any:
 def end() -> Any:
     if request.method == 'POST':
         session['user_name'] = request.form['user_name']
-        print(session['user_name'])
+
         """Submit score to db and display the leaderboard."""
         submit_score(session['user_name'], session['score'])
         return redirect(url_for('leaderboard'))
@@ -115,7 +116,10 @@ def end() -> Any:
 def leaderboard() -> Any:
     """Display the leaderboard page."""
     top_scores = get_top_scores()
-    print(session['user_name'])
+
+    if not session.get('score'):
+        session['score'] = 0
+
     return render_template(
         'leaderboard.html',
         score=session['score'],
