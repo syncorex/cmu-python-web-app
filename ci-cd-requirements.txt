@@ -4,3 +4,4 @@ flake8
 hypothesis
 Flask
 requests
+types-requests
