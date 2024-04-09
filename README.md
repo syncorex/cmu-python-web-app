@@ -1,6 +1,6 @@
 # Advanced Python Final Project: Trivia Application
 
-A final project for my Advanced Programing: Python class. It's a containerized trivia web app built using Flask and PyMongo, styled with flake8, and tested with unittest. To provide trivia questions, the app makes requests to the OpenTrivia API endpoint.
+A final project for my Advanced Programing: Python class. It's a containerized trivia web app built using Flask and PyMongo, styled with flake8, and tested with unittest. The app uses a MongoDB Atlas cluster to handle the leaderboard, and to provide trivia questions the app makes requests to the OpenTrivia API endpoint.
 
 ## Outcomes
 
