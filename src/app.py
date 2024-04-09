@@ -12,7 +12,7 @@ from datetime import datetime
 app = Flask(__name__)
 app.secret_key = 'BLABLABLA'
 
-cert_path = '/home/user/cmu-python-web-app/cert.pem'
+cert_path = 'cert.pem'
 
 uri = 'mongodb+srv://cluster0.j9gqkfd.mongodb.net/'\
       '?authSource=%24external'\
